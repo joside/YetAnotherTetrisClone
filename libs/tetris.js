@@ -294,6 +294,27 @@ var Tetris = function(container){
             that.container.innerHTML += "\n\n ** SCORE: "+that.score+" **\n\n"
         }
     }
+
+    window.ondevicemotion = (function(){
+        var xStarted = false, yStarted = false;
+        return function(coords) {
+            var accelX = Math.round(coords.acceleration.x * 5),
+                accelY = Math.round(coords.acceleration.y * 5),
+                accelZ = Math.round(coords.acceleration.z * 5);
+
+            if(!xStarted && accelX > 0){
+                xStarted = true;
+                that.currentBrick.right();
+            }
+            if(!xStarted && accelX < 0){
+                xStarted = true;
+                that.currentBrick.left();
+            }
+            if(xStarted && accelX === 0) {
+                xStarted = false;
+            }
+        };
+    }());
 };
 
 Tetris.prototype = (function(){

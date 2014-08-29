@@ -290,7 +290,8 @@ var Tetris = function(container){
             if(e.keyCode === 40) {
                 that.currentBrick.down();
             }
-            console.log(that.map.draw(that.currentBrick));
+            that.container.innerHTML = that.map.draw(that.currentBrick);
+            that.container.innerHTML += "\n\n ** SCORE: "+that.score+" **\n\n"
         }
     }
 };
@@ -298,7 +299,9 @@ var Tetris = function(container){
 Tetris.prototype = (function(){
     return {
         start: function(){
-            var that = this;
+            var that = this,
+                lost = false;
+
             this.paused = false;
             this.mainInterval = window.setInterval(function(){
                 if(!that.paused){
@@ -307,13 +310,16 @@ Tetris.prototype = (function(){
                         that.score += that.map.checkFullLines();
                         if(that.map.isFull()){
                             that.stop();
-                            console.log('YOU LOSER!!!');
-                            console.log('Your score was ' + that.score);
+                            lost = true;
                         } else {
                             that.currentBrick = new Brick(that.map);
                         }
                     }
-                    console.log(that.map.draw(that.currentBrick));
+                    that.container.innerHTML = that.map.draw(that.currentBrick);
+                    if(lost) {
+                        that.container.innerHTML += "\n\n **** YOU LOSER!!! ****\n\n"
+                    }
+                    that.container.innerHTML += "\n\n ** SCORE: "+that.score+" **\n\n"
                 }
             }, this.interval);
         },
